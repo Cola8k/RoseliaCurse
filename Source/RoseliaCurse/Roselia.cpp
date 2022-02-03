@@ -13,6 +13,7 @@
 #include "Components/CapsuleComponent.h"
 
 
+
 ARoselia::ARoselia() 
 {
 
@@ -22,18 +23,20 @@ ARoselia::ARoselia()
 	FearMax = 100;
 	SpeedFear = 600;
 
-
+	//Setup Torch
 	ConstructorHelpers::FObjectFinder<UPaperSprite>TorchAsset(TEXT("PaperSprite'/Game/Torch.Torch'"));
 	Torch = CreateDefaultSubobject<UPaperSpriteComponent>("TorchSprite");
 	Torch->SetSprite(TorchAsset.Object);
 	
+	//Setup Roselia
 	ConstructorHelpers::FObjectFinder<UPaperFlipbook>RoseliaAsset(TEXT("PaperFlipbook'/Game/Roselia_FB.Roselia_FB'"));
-	Sprite->SetFlipbook(RoseliaAsset.Object);
-
-	
+	GetSprite()->SetFlipbook(RoseliaAsset.Object);
 	RootComponent = GetCapsuleComponent();	
 	Torch->SetupAttachment(RootComponent);
-	Sprite->SetupAttachment(RootComponent);
+	GetSprite()->SetupAttachment(RootComponent);
+
+
+	//Setup OtherComponents
 }
 
 void ARoselia::BeginPlay()
@@ -43,6 +46,19 @@ void ARoselia::BeginPlay()
 
 	MyWorld = GetWorld();
 	CombatStart();
+
+
+}
+
+
+void ARoselia::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAction("LightSwitch", EInputEvent::IE_Pressed, this, &ARoselia::LightSwitch);
+
+	PlayerInputComponent->BindAxis("MoveUp", this, &ARoselia::MoveUp);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ARoselia::MoveRight);
 
 
 }
@@ -94,10 +110,18 @@ void ARoselia::CombatEnd()
 {
 }
 
-void ARoselia::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ARoselia::MoveUp(float Value)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAction("LightSwitch", EInputEvent::IE_Pressed, this, &ARoselia::LightSwitch);
+	AddMovementInput(FVector::XAxisVector, Value);
 
 }
+
+
+void ARoselia::MoveRight(float Value)
+{
+	AddMovementInput(FVector::YAxisVector, Value);
+
+}
+
+
+

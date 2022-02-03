@@ -35,6 +35,9 @@ public:
 	bool bIsLightOn;
 	FTimerHandle FearManagement_TH;
 
+	
+
+
 	UPROPERTY()
 	class UPaperSpriteComponent* Torch;
 
@@ -55,6 +58,12 @@ public:
 
 	UFUNCTION()
 	void CombatEnd();
+
+	UFUNCTION()
+	void MoveRight(float Value);
+
+	UFUNCTION()
+	void MoveUp(float Value);
 
 	UFUNCTION()
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
