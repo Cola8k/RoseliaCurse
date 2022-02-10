@@ -7,11 +7,20 @@
 #include "CameraPosition.h"
 #include "Roselia.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/SceneComponent.h"
+#include "GameFramework/SpringArmComponent.h"
 
 
 AGM_CPP::AGM_CPP() 
 {
-	CameraPlayer=CreateDefaultSubobject<UCameraComponent>("Camera");
+	GMRoot = CreateDefaultSubobject<USceneComponent>("Root");
+	RootComponent = GMRoot;
+
+	CameraArm = CreateDefaultSubobject<USpringArmComponent>("Arm");
+	CameraArm->SetupAttachment(RootComponent);
+
+	CameraPlayer = CreateDefaultSubobject<UCameraComponent>("Camera");
+	CameraPlayer->SetupAttachment(CameraArm);
 }
 
 void AGM_CPP::BeginPlay()
@@ -24,6 +33,12 @@ void AGM_CPP::BeginPlay()
 	
 
 	RoseliaRef = (ARoselia*)UGameplayStatics::GetActorOfClass(RoseliaWorld, ARoselia::StaticClass());
+
+	if(RoseliaRef)
+		UE_LOG(LogTemp, Warning, TEXT("ok"))
+	else
+		UE_LOG(LogTemp, Warning, TEXT("no"))
+
 	if (RoseliaRef)
 		RoseliaController = (APlayerController*)RoseliaRef->GetController();
 	if (RoseliaController)

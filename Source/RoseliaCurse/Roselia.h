@@ -30,9 +30,15 @@ public:
 
 	float Speed;
 	float SpeedFear;
+
+	UPROPERTY(BlueprintReadOnly)
 	float Fear;
+
+	UPROPERTY(BlueprintReadOnly)
 	float FearMax;
+		
 	bool bIsLightOn;
+	bool bIsInBerserkMode;
 	FTimerHandle FearManagement_TH;
 
 	

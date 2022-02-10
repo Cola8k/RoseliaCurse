@@ -19,9 +19,11 @@ ARoselia::ARoselia()
 
 	// Setup Param
 	Speed = 300;
-	Fear = 0;
+	Fear = 1;
 	FearMax = 100;
 	SpeedFear = 600;
+	bIsInBerserkMode = false;
+	
 
 	//Setup Torch
 	ConstructorHelpers::FObjectFinder<UPaperSprite>TorchAsset(TEXT("PaperSprite'/Game/Torch.Torch'"));
@@ -65,22 +67,35 @@ void ARoselia::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ARoselia::FearManagement()
 {
-	if (Fear < FearMax)
+	if (!bIsInBerserkMode)
 	{
-		Fear++;
-		UE_LOG(LogTemp, Warning, TEXT("%f"), Fear);
+		if (Fear < FearMax)
+		{
+			Fear++;
+		}
+		else
+		{
+			BerserkMode();
+		}
 	}
-	else
+	else 
 	{
-		BerserkMode();
-	}
+		if (Fear > 0) 
+		{
+			Fear -= 1.5f;
+		}
+		else
+		{
+			bIsInBerserkMode = false;
+		}
 
+	}
 }
 
 void ARoselia::BerserkMode()
 {
-	MyWorld->GetTimerManager().ClearTimer(FearManagement_TH);
-	UE_LOG(LogTemp, Warning, TEXT("Berserk"));
+	bIsInBerserkMode = true;
+	
 
 }
 
@@ -112,6 +127,8 @@ void ARoselia::CombatEnd()
 
 void ARoselia::MoveUp(float Value)
 {
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), Value);
+
 	AddMovementInput(FVector::XAxisVector, Value);
 
 }

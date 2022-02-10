@@ -23,6 +23,12 @@ public:
 	class UCameraComponent* CameraPlayer;
 
 	UPROPERTY()
+	class USceneComponent* GMRoot;
+
+	UPROPERTY(EditAnywhere)
+	class USpringArmComponent* CameraArm;
+
+	UPROPERTY()
 	class UWorld* RoseliaWorld;
 
 	UPROPERTY()
