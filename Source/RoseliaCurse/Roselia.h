@@ -16,6 +16,16 @@ enum class EAnimDirection :uint8
 	Idle,
 };
 
+UENUM(BlueprintType)
+enum class ETorchDirection :uint8
+{
+	Up,
+	Down,
+	Left,
+	Right,
+
+};
+
 UCLASS()
 class ROSELIACURSE_API ARoselia : public APaperCharacter
 {
@@ -38,11 +48,22 @@ public:
 	float FearMax;
 		
 	bool bIsLightOn;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool bIsInBerserkMode;
+
 	FTimerHandle FearManagement_TH;
 
+	UPROPERTY()
+		TMap<ETorchDirection, FRotator> TorchRotation;
 	
+	FRotator Up;
+	FRotator Down;
+	FRotator Right;
+	FRotator Left;
 
+	UPROPERTY(EditAnywhere)
+	class USpotLightComponent* TorchLight;
 
 	UPROPERTY()
 	class UPaperSpriteComponent* Torch;

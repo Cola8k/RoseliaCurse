@@ -25,14 +25,11 @@ public:
 	UPROPERTY()
 	class USceneComponent* GMRoot;
 
-	UPROPERTY(EditAnywhere)
-	class USpringArmComponent* CameraArm;
-
 	UPROPERTY()
 	class UWorld* RoseliaWorld;
 
 	UPROPERTY()
-	class ACameraPosition* CameraRef;
+	class ACameraPosition_CPP* CameraPositionRef;
 
 	UPROPERTY()
 	class APlayerController* RoseliaController;

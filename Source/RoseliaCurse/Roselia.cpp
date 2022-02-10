@@ -11,7 +11,7 @@
 #include "Components/InputComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
-
+#include "Components/SpotLightComponent.h"
 
 
 ARoselia::ARoselia() 
@@ -24,11 +24,14 @@ ARoselia::ARoselia()
 	SpeedFear = 600;
 	bIsInBerserkMode = false;
 	
+	
 
 	//Setup Torch
 	ConstructorHelpers::FObjectFinder<UPaperSprite>TorchAsset(TEXT("PaperSprite'/Game/Torch.Torch'"));
 	Torch = CreateDefaultSubobject<UPaperSpriteComponent>("TorchSprite");
 	Torch->SetSprite(TorchAsset.Object);
+	TorchLight = CreateDefaultSubobject<USpotLightComponent>("TorchLight");
+	TorchLight->SetupAttachment(RootComponent);
 	
 	//Setup Roselia
 	ConstructorHelpers::FObjectFinder<UPaperFlipbook>RoseliaAsset(TEXT("PaperFlipbook'/Game/Roselia_FB.Roselia_FB'"));
@@ -49,7 +52,19 @@ void ARoselia::BeginPlay()
 	MyWorld = GetWorld();
 	CombatStart();
 
+	Left = FRotator(0, 270, 0);
+	Right = FRotator(0, 90, 0);
+	TorchRotation.Add(ETorchDirection::Left, Left);
+	TorchRotation.Add(ETorchDirection::Right, Right);
 
+
+	Up = FRotator(0, 0, 0);
+	Down = FRotator(0, 180, 0);
+	TorchRotation.Add(ETorchDirection::Up, Up);
+	TorchRotation.Add(ETorchDirection::Down, Down);
+	
+	
+	
 }
 
 
@@ -71,7 +86,10 @@ void ARoselia::FearManagement()
 	{
 		if (Fear < FearMax)
 		{
-			Fear++;
+			if (bIsLightOn)
+				Fear++;
+			else
+				Fear += 1.5f;
 		}
 		else
 		{
@@ -82,7 +100,7 @@ void ARoselia::FearManagement()
 	{
 		if (Fear > 0) 
 		{
-			Fear -= 1.5f;
+			Fear -= 2.5f;
 		}
 		else
 		{
@@ -104,13 +122,13 @@ void ARoselia::LightSwitch()
 	if (bIsLightOn) 
 	{
 		bIsLightOn = false;
-		UE_LOG(LogTemp, Warning, TEXT("Light is Off"));
+		TorchLight->SetIntensity(0);
 	}
 
 	else 
 	{
 		bIsLightOn = true;
-		UE_LOG(LogTemp, Warning, TEXT("Light is On"));
+		TorchLight->SetIntensity(100000.f);
 	}
 
 }
@@ -131,13 +149,30 @@ void ARoselia::MoveUp(float Value)
 
 	AddMovementInput(FVector::XAxisVector, Value);
 
+	if (Value > 0)
+	{
+		
+		TorchLight->SetWorldRotation(*TorchRotation.Find(ETorchDirection::Up));
+		
+	}
+	else if (Value < 0)
+	{
+		
+		TorchLight->SetWorldRotation(*TorchRotation.Find(ETorchDirection::Down));
+	}
+
 }
 
 
 void ARoselia::MoveRight(float Value)
 {
 	AddMovementInput(FVector::YAxisVector, Value);
-
+	if (Value > 0)
+	{
+		TorchLight->SetWorldRotation(*TorchRotation.Find(ETorchDirection::Right));
+	}
+	else if(Value<0)
+		TorchLight->SetWorldRotation(*TorchRotation.Find(ETorchDirection::Left));
 }
 
 
