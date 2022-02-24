@@ -12,6 +12,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "EnemySimple_CPP.h"
+#include "DrawDebugHelpers.h"
 
 
 ARoselia::ARoselia() 
@@ -23,7 +25,9 @@ ARoselia::ARoselia()
 	FearMax = 100;
 	SpeedFear = 600;
 	bIsInBerserkMode = false;
-	
+	TraceShape=FCollisionShape::MakeSphere(10.0f);
+	DMGTorch = 1;
+
 	
 
 	//Setup Torch
@@ -80,12 +84,38 @@ void ARoselia::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+void ARoselia::DOT()
+{
+	float RadiusMultiplier = 1;
+	float OffsetMultiplier = 15;
+	FVector SphereOffset=GetActorForwardVector();
+	for (int i = 0; i < 5; i++)
+	{
+		TArray<FHitResult> OutHits;
+		TraceShape.SetSphere(TraceShape.GetSphereRadius() * RadiusMultiplier);
+		MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation()+SphereOffset*OffsetMultiplier, TorchLight->GetComponentLocation()+SphereOffset * OffsetMultiplier, FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
+		DrawDebugSphere(MyWorld, TorchLight->GetComponentLocation() + SphereOffset * OffsetMultiplier, TraceShape.GetSphereRadius()*RadiusMultiplier, 11, FColor::Red, true);
+		for (FHitResult Hits : OutHits)
+		{
+			if (Cast<AEnemySimple_CPP>(Hits.GetActor()))
+			{
+				Cast<AEnemySimple_CPP>(Hits.GetActor())->LightManagement(DMGTorch);
+			}
+		}
+		RadiusMultiplier *= 1.25f;
+		OffsetMultiplier *=	2.5f;
+		
+	}
+	TraceShape.SetSphere(10.0f);
+}
+
 void ARoselia::FearManagement()
 {
 	if (!bIsInBerserkMode)
 	{
 		if (Fear < FearMax)
 		{
+		
 			if (bIsLightOn)
 				Fear++;
 			else
@@ -98,8 +128,9 @@ void ARoselia::FearManagement()
 	}
 	else 
 	{
-		if (Fear > 0) 
+		if (Fear > 0.1f) 
 		{
+			
 			Fear -= 2.5f;
 		}
 		else
@@ -123,12 +154,15 @@ void ARoselia::LightSwitch()
 	{
 		bIsLightOn = false;
 		TorchLight->SetIntensity(0);
+		MyWorld->GetTimerManager().ClearTimer(DOT_TH);
+
 	}
 
 	else 
 	{
 		bIsLightOn = true;
 		TorchLight->SetIntensity(100000.f);
+		MyWorld->GetTimerManager().SetTimer(DOT_TH, this, &ARoselia::DOT, 1.0f, true,.0f);
 	}
 
 }

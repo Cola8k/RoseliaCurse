@@ -40,19 +40,23 @@ public:
 
 	float Speed;
 	float SpeedFear;
+	float DMGTorch;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	float Fear;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	float FearMax;
-		
+	
+	UPROPERTY(BlueprintReadWrite)
 	bool bIsLightOn;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	bool bIsInBerserkMode;
 
 	FTimerHandle FearManagement_TH;
+	FTimerHandle DOT_TH;
+
 
 	UPROPERTY()
 		TMap<ETorchDirection, FRotator> TorchRotation;
@@ -61,11 +65,13 @@ public:
 	FRotator Down;
 	FRotator Right;
 	FRotator Left;
+	FCollisionShape TraceShape;
+
 
 	UPROPERTY(EditAnywhere)
 	class USpotLightComponent* TorchLight;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	class UPaperSpriteComponent* Torch;
 
 	UPROPERTY()
@@ -95,5 +101,7 @@ public:
 	UFUNCTION()
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 		
+	UFUNCTION()
+	void DOT();
 	
 };
