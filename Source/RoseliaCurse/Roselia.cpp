@@ -88,17 +88,20 @@ void ARoselia::DOT()
 {
 	float RadiusMultiplier = 1;
 	float OffsetMultiplier = 15;
-	FVector SphereOffset=GetActorForwardVector();
+	FVector SphereOffset=TorchLight->GetForwardVector();
 	for (int i = 0; i < 5; i++)
 	{
 		TArray<FHitResult> OutHits;
 		TraceShape.SetSphere(TraceShape.GetSphereRadius() * RadiusMultiplier);
-		MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation()+SphereOffset*OffsetMultiplier, TorchLight->GetComponentLocation()+SphereOffset * OffsetMultiplier, FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
+		MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation()+SphereOffset*OffsetMultiplier, TorchLight->GetComponentLocation()+SphereOffset * OffsetMultiplier,FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
 		DrawDebugSphere(MyWorld, TorchLight->GetComponentLocation() + SphereOffset * OffsetMultiplier, TraceShape.GetSphereRadius()*RadiusMultiplier, 11, FColor::Red, true);
 		for (FHitResult Hits : OutHits)
 		{
+			FString x = Hits.Actor->StaticClass()->GetName();
+			UE_LOG(LogTemp, Warning, TEXT("%s"),*x)
 			if (Cast<AEnemySimple_CPP>(Hits.GetActor()))
 			{
+				
 				Cast<AEnemySimple_CPP>(Hits.GetActor())->LightManagement(DMGTorch);
 			}
 		}

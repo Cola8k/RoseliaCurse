@@ -7,7 +7,7 @@
 
 AEnemySimple_CPP::AEnemySimple_CPP() 
 {
-	HPMax = 8;
+	HPMax = 2;
 	HPActual = HPMax;
 }
 
@@ -27,6 +27,7 @@ void AEnemySimple_CPP::HPManagement(float DMG)
 
 void AEnemySimple_CPP::LightManagement(float DMG)
 {
+	
 	HPManagement(DMG);
 	//GetWorld()->GetTimerManager().SetTimer(FearSwitch_TH,this,&AEnemySimple_CPP::FearSwitch, 2, true,.0f);
 	FearSwitch();
