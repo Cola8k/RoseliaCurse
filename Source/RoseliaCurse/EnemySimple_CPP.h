@@ -19,9 +19,12 @@ class ROSELIACURSE_API AEnemySimple_CPP : public APaperCharacter
 
 public:
 
+	bool bCanTakeDMG;
+
 	float HPActual;
 	float HPMax;
 	FTimerHandle FearSwitch_TH;
+	FTimerHandle DMGReset_TH;
 
 	virtual void BeginPlay() override;
 
@@ -31,6 +34,9 @@ public:
 
 	UFUNCTION()
 	virtual void HPManagement(float DMG);
+
+	UFUNCTION()
+	virtual void DMGReset();
 	
 	UFUNCTION()
 	virtual void LightManagement(float DMG);

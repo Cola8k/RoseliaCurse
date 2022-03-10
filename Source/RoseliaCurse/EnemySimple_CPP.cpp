@@ -1,3 +1,4 @@
+#include "EnemySimple_CPP.h"
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
@@ -9,6 +10,7 @@ AEnemySimple_CPP::AEnemySimple_CPP()
 {
 	HPMax = 2;
 	HPActual = HPMax;
+	bCanTakeDMG = true;
 }
 
 void AEnemySimple_CPP::BeginPlay()
@@ -19,10 +21,24 @@ void AEnemySimple_CPP::BeginPlay()
 
 void AEnemySimple_CPP::HPManagement(float DMG)
 {
-	if (HPActual > DMG)
-		HPActual-=DMG;
-	else
-		SetLifeSpan(0.1f);
+	if (bCanTakeDMG == true)
+	{
+		if (HPActual > DMG)
+		{
+			HPActual -= DMG;
+			bCanTakeDMG = false;
+			GetWorld()->GetTimerManager().SetTimer(DMGReset_TH, this, &AEnemySimple_CPP::DMGReset, 1.0f, false);
+		}
+		else
+			SetLifeSpan(0.1f);
+	}
+
+
+}
+
+void AEnemySimple_CPP::DMGReset()
+{
+	bCanTakeDMG = true;
 }
 
 void AEnemySimple_CPP::LightManagement(float DMG)

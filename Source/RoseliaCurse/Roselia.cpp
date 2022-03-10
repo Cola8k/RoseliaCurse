@@ -165,7 +165,7 @@ void ARoselia::LightSwitch()
 	{
 		bIsLightOn = true;
 		TorchLight->SetIntensity(100000.f);
-		MyWorld->GetTimerManager().SetTimer(DOT_TH, this, &ARoselia::DOT, 1.0f, true,.0f);
+		MyWorld->GetTimerManager().SetTimer(DOT_TH, this, &ARoselia::DOT, 0.1f, true,.0f);
 	}
 
 }
