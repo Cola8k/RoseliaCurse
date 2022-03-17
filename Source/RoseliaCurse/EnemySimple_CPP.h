@@ -41,7 +41,7 @@ public:
 	UFUNCTION()
 	virtual void LightManagement(float DMG);
 
-	UFUNCTION(BlueprintNativeEvent)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void FearSwitch();
 	void FearSwitch_Implementation();
 

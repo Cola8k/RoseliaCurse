@@ -1,9 +1,8 @@
 #include "EnemySimple_CPP.h"
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EnemySimple_CPP.h"
 #include "TimerManager.h"
+#include "Kismet/GameplayStatics.h"
+#include "Roselia.h"
 
 
 AEnemySimple_CPP::AEnemySimple_CPP() 
@@ -16,6 +15,7 @@ AEnemySimple_CPP::AEnemySimple_CPP()
 void AEnemySimple_CPP::BeginPlay()
 {
 	Super::BeginPlay();
+	//(Cast<ARoselia>(UGameplayStatics::GetActorOfClass(GetWorld(), ARoselia::StaticClass())))->FearDelegate.Add(&AEnemySimple_CPP::FearSwitch);
 	
 }
 

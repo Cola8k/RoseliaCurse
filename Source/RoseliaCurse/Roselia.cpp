@@ -14,6 +14,7 @@
 #include "Components/SpotLightComponent.h"
 #include "EnemySimple_CPP.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 ARoselia::ARoselia() 
@@ -43,6 +44,9 @@ ARoselia::ARoselia()
 	RootComponent = GetCapsuleComponent();	
 	Torch->SetupAttachment(RootComponent);
 	GetSprite()->SetupAttachment(RootComponent);
+
+	GhostLight = CreateDefaultSubobject<USpotLightComponent>("GhostLight");
+	GhostLight->SetupAttachment(RootComponent);
 
 
 	//Setup OtherComponents
@@ -86,6 +90,7 @@ void ARoselia::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void ARoselia::DOT()
 {
+	TraceShape.SetSphere(10.0f);
 	float RadiusMultiplier = 1;
 	float OffsetMultiplier = 15;
 	FVector SphereOffset=TorchLight->GetForwardVector();
@@ -94,11 +99,10 @@ void ARoselia::DOT()
 		TArray<FHitResult> OutHits;
 		TraceShape.SetSphere(TraceShape.GetSphereRadius() * RadiusMultiplier);
 		MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation()+SphereOffset*OffsetMultiplier, TorchLight->GetComponentLocation()+SphereOffset * OffsetMultiplier,FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
-		DrawDebugSphere(MyWorld, TorchLight->GetComponentLocation() + SphereOffset * OffsetMultiplier, TraceShape.GetSphereRadius()*RadiusMultiplier, 11, FColor::Red, true);
+		DrawDebugSphere(MyWorld, TorchLight->GetComponentLocation() + SphereOffset * OffsetMultiplier, TraceShape.GetSphereRadius()*RadiusMultiplier, 11, FColor::Red, false, 3.0f);
 		for (FHitResult Hits : OutHits)
 		{
 			FString x = Hits.Actor->StaticClass()->GetName();
-			UE_LOG(LogTemp, Warning, TEXT("%s"),*x)
 			if (Cast<AEnemySimple_CPP>(Hits.GetActor()))
 			{
 				
@@ -111,6 +115,8 @@ void ARoselia::DOT()
 	}
 	TraceShape.SetSphere(10.0f);
 }
+
+
 
 void ARoselia::FearManagement()
 {
@@ -139,6 +145,9 @@ void ARoselia::FearManagement()
 		else
 		{
 			bIsInBerserkMode = false;
+			GetCharacterMovement()->MaxWalkSpeed = 600;
+			GhostLight->SetIntensity(.0f);
+			MyWorld->GetTimerManager().ClearTimer(GhostLightDOT_TH);
 		}
 
 	}
@@ -147,25 +156,49 @@ void ARoselia::FearManagement()
 void ARoselia::BerserkMode()
 {
 	bIsInBerserkMode = true;
-	
+	FearDelegate.Broadcast();
+	GetCharacterMovement()->MaxWalkSpeed = 1000;
+	GhostLight->SetIntensity(100000.0f);
+	MyWorld->GetTimerManager().SetTimer(GhostLightDOT_TH,this, &ARoselia::GHostLightDOT, 0.1f, true, 0.1f);
 
+}
+
+void ARoselia::GHostLightDOT()
+{
+	TraceShape.SetSphere(300.0f);
+	TArray<FHitResult> OutHits;
+	TraceShape.SetSphere(TraceShape.GetSphereRadius());
+	MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation(), TorchLight->GetComponentLocation(), FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
+	DrawDebugSphere(MyWorld, TorchLight->GetComponentLocation(), TraceShape.GetSphereRadius(), 11, FColor::Red, false, 3.0f);
+	for (FHitResult Hits : OutHits)
+	{
+		FString x = Hits.Actor->StaticClass()->GetName();
+		if (Cast<AEnemySimple_CPP>(Hits.GetActor()))
+		{
+
+			Cast<AEnemySimple_CPP>(Hits.GetActor())->LightManagement(DMGTorch);
+		}
+	}
 }
 
 void ARoselia::LightSwitch()
 {
-	if (bIsLightOn) 
+	if (!bIsInBerserkMode)
 	{
-		bIsLightOn = false;
-		TorchLight->SetIntensity(0);
-		MyWorld->GetTimerManager().ClearTimer(DOT_TH);
+		if (bIsLightOn)
+		{
+			bIsLightOn = false;
+			TorchLight->SetIntensity(0);
+			MyWorld->GetTimerManager().ClearTimer(DOT_TH);
 
-	}
+		}
 
-	else 
-	{
-		bIsLightOn = true;
-		TorchLight->SetIntensity(100000.f);
-		MyWorld->GetTimerManager().SetTimer(DOT_TH, this, &ARoselia::DOT, 0.1f, true,.0f);
+		else
+		{
+			bIsLightOn = true;
+			TorchLight->SetIntensity(100000.f);
+			MyWorld->GetTimerManager().SetTimer(DOT_TH, this, &ARoselia::DOT, 0.1f, true, .0f);
+		}
 	}
 
 }

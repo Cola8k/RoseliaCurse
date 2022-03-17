@@ -6,6 +6,9 @@
 #include "PaperCharacter.h"
 #include "Roselia.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FFearSignature);
+
+
 UENUM(BlueprintType)
 enum class EAnimDirection :uint8
 {
@@ -31,7 +34,7 @@ class ROSELIACURSE_API ARoselia : public APaperCharacter
 {
 	GENERATED_BODY()
 	
-	
+
 
 public:
 	ARoselia();
@@ -56,10 +59,11 @@ public:
 
 	FTimerHandle FearManagement_TH;
 	FTimerHandle DOT_TH;
+	FTimerHandle GhostLightDOT_TH;
 
 
 	UPROPERTY()
-		TMap<ETorchDirection, FRotator> TorchRotation;
+	TMap<ETorchDirection, FRotator> TorchRotation;
 	
 	FRotator Up;
 	FRotator Down;
@@ -67,6 +71,13 @@ public:
 	FRotator Left;
 	FCollisionShape TraceShape;
 
+
+	UPROPERTY(BlueprintAssignable)
+	FFearSignature FearDelegate;
+
+
+	UPROPERTY(EditAnywhere)
+	class USpotLightComponent* GhostLight;
 
 	UPROPERTY(EditAnywhere)
 	class USpotLightComponent* TorchLight;
@@ -76,6 +87,9 @@ public:
 
 	UPROPERTY()
 	class UWorld* MyWorld;
+
+	UFUNCTION()
+	void GHostLightDOT();
 
 	UFUNCTION()
 	void FearManagement();
