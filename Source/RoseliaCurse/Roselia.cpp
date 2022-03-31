@@ -99,7 +99,6 @@ void ARoselia::DOT()
 		TArray<FHitResult> OutHits;
 		TraceShape.SetSphere(TraceShape.GetSphereRadius() * RadiusMultiplier);
 		MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation()+SphereOffset*OffsetMultiplier, TorchLight->GetComponentLocation()+SphereOffset * OffsetMultiplier,FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
-		DrawDebugSphere(MyWorld, TorchLight->GetComponentLocation() + SphereOffset * OffsetMultiplier, TraceShape.GetSphereRadius()*RadiusMultiplier, 11, FColor::Red, false, 3.0f);
 		for (FHitResult Hits : OutHits)
 		{
 			FString x = Hits.Actor->StaticClass()->GetName();
@@ -169,7 +168,6 @@ void ARoselia::GHostLightDOT()
 	TArray<FHitResult> OutHits;
 	TraceShape.SetSphere(TraceShape.GetSphereRadius());
 	MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation(), TorchLight->GetComponentLocation(), FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
-	DrawDebugSphere(MyWorld, TorchLight->GetComponentLocation(), TraceShape.GetSphereRadius(), 11, FColor::Red, false, 3.0f);
 	for (FHitResult Hits : OutHits)
 	{
 		FString x = Hits.Actor->StaticClass()->GetName();
@@ -232,6 +230,37 @@ void ARoselia::MoveUp(float Value)
 	}
 
 }
+
+void ARoselia::SlowFunction()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Kek"));
+	if (!bIsSlowed)
+	{
+		bIsSlowed = true;
+		GetCharacterMovement()->MaxWalkSpeed /= 2;
+		MyWorld->GetTimerManager().SetTimer(StunManagement_TH, this, &ARoselia::StunManagement, 3);
+	}
+	else if (!bIsStunned) 
+	{
+		bIsStunned = true;
+		GetCharacterMovement()->MaxWalkSpeed = 0;
+		MyWorld->GetTimerManager().SetTimer(StunManagement_TH, this, &ARoselia::StunManagement, 1.5);
+	}
+	else
+	{	
+		SetLifeSpan(0.1f);
+	}
+}
+
+void ARoselia::StunManagement()
+{
+	GetCharacterMovement()->MaxWalkSpeed = 600;
+	bIsSlowed = false;
+	bIsStunned = false;
+	MyWorld->GetTimerManager().ClearTimer(StunManagement_TH);
+}
+
+
 
 
 void ARoselia::MoveRight(float Value)

@@ -44,13 +44,16 @@ public:
 	float Speed;
 	float SpeedFear;
 	float DMGTorch;
+	bool bIsSlowed;
+	bool bIsStunned;
+
 
 	UPROPERTY(BlueprintReadWrite)
 	float Fear;
 
 	UPROPERTY(BlueprintReadWrite)
 	float FearMax;
-	
+
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsLightOn;
 
@@ -60,6 +63,7 @@ public:
 	FTimerHandle FearManagement_TH;
 	FTimerHandle DOT_TH;
 	FTimerHandle GhostLightDOT_TH;
+	FTimerHandle StunManagement_TH;
 
 
 	UPROPERTY()
@@ -111,6 +115,12 @@ public:
 
 	UFUNCTION()
 	void MoveUp(float Value);
+
+	UFUNCTION(BlueprintCallable)
+	void SlowFunction();
+
+	UFUNCTION()
+	void StunManagement();
 
 	UFUNCTION()
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

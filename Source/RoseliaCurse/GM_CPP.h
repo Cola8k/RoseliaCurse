@@ -19,7 +19,7 @@ public:
 	AGM_CPP();
 	virtual void BeginPlay() override;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	class UCameraComponent* CameraPlayer;
 
 	UPROPERTY()
