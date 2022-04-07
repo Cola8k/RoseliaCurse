@@ -15,6 +15,7 @@
 #include "EnemySimple_CPP.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ARoselia::ARoselia() 
@@ -139,14 +140,17 @@ void ARoselia::FearManagement()
 		if (Fear > 0.1f) 
 		{
 			
-			Fear -= 2.5f;
+			Fear -= 2.0f;
 		}
 		else
 		{
-			bIsInBerserkMode = false;
+			/*bIsInBerserkMode = false;
 			GetCharacterMovement()->MaxWalkSpeed = 600;
 			GhostLight->SetIntensity(.0f);
-			MyWorld->GetTimerManager().ClearTimer(GhostLightDOT_TH);
+			MyWorld->GetTimerManager().ClearTimer(GhostLightDOT_TH);*/
+
+
+			EndgameFunction(1);
 		}
 
 	}
@@ -154,6 +158,8 @@ void ARoselia::FearManagement()
 
 void ARoselia::BerserkMode()
 {
+	bIsLightOn = true;
+	LightSwitch();
 	bIsInBerserkMode = true;
 	FearDelegate.Broadcast();
 	GetCharacterMovement()->MaxWalkSpeed = 1000;
@@ -169,11 +175,9 @@ void ARoselia::GHostLightDOT()
 	TraceShape.SetSphere(TraceShape.GetSphereRadius());
 	MyWorld->SweepMultiByChannel(OutHits, TorchLight->GetComponentLocation(), TorchLight->GetComponentLocation(), FQuat::Identity, ECollisionChannel::ECC_Visibility, TraceShape);
 	for (FHitResult Hits : OutHits)
-	{
-		FString x = Hits.Actor->StaticClass()->GetName();
+	{			
 		if (Cast<AEnemySimple_CPP>(Hits.GetActor()))
 		{
-
 			Cast<AEnemySimple_CPP>(Hits.GetActor())->LightManagement(DMGTorch);
 		}
 	}

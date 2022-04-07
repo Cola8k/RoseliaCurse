@@ -18,8 +18,10 @@ class ROSELIACURSE_API AGM_CPP : public AGameModeBase
 public:
 	AGM_CPP();
 	virtual void BeginPlay() override;
+	
 
-	UPROPERTY(BlueprintReadWrite)
+
+	UPROPERTY()
 	class UCameraComponent* CameraPlayer;
 
 	UPROPERTY()
@@ -36,4 +38,19 @@ public:
 
 	UPROPERTY()
 	class ARoselia* RoseliaRef;
+
+	UPROPERTY(VisibleAnywhere)
+	TArray<class AEnemySimple_CPP*> EnemyArray;
+
+	UFUNCTION()
+	void RemoveFromArray(class AEnemySimple_CPP* EnemyRef);
+
+	UFUNCTION()
+	void SetupEnemyArray(class AEnemySimple_CPP* EnemyRef);
+
+	UFUNCTION(BlueprintPure)
+	class UCameraComponent* GetCameraPleyer() { return CameraPlayer; }
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void SpawnBoss();
 };

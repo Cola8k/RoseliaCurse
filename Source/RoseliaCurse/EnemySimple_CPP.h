@@ -9,6 +9,8 @@
 /**
  * 
  */
+DECLARE_DELEGATE_OneParam(RemoveFromArraySignature, class AEnemySimple_CPP*);
+
 UCLASS()
 class ROSELIACURSE_API AEnemySimple_CPP : public APaperCharacter
 {
@@ -28,6 +30,7 @@ public:
 
 	virtual void BeginPlay() override;
 
+	RemoveFromArraySignature RemoveFromArrayDelegate;
 
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsFeared;
@@ -44,5 +47,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void FearSwitch();
 	void FearSwitch_Implementation();
+
+
 
 };

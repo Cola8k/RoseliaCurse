@@ -119,6 +119,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SlowFunction();
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void EndgameFunction(int i);
+
 	UFUNCTION()
 	void StunManagement();
 

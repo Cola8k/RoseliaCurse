@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "CameraPosition_CPP.h"
 #include "Roselia.h"
+#include "EnemySimple_CPP.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/SceneComponent.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -42,4 +43,17 @@ void AGM_CPP::BeginPlay()
 	if (RoseliaController)
 		RoseliaController->SetViewTarget(this);
 
+}
+
+void AGM_CPP::RemoveFromArray(AEnemySimple_CPP* EnemyRef)
+{
+	EnemyArray.Remove(EnemyRef);
+	if (EnemyArray.Num() == 0) 
+		SpawnBoss();
+}
+
+void AGM_CPP::SetupEnemyArray(AEnemySimple_CPP* EnemyRef)
+{
+	EnemyArray.Add(EnemyRef);
+	EnemyRef->RemoveFromArrayDelegate.BindUObject(this, &AGM_CPP::RemoveFromArray);
 }
