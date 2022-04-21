@@ -104,10 +104,10 @@ public:
 	UFUNCTION()
 	void LightSwitch();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void CombatStart();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void CombatEnd();
 
 	UFUNCTION()

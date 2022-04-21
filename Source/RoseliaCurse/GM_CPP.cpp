@@ -56,4 +56,5 @@ void AGM_CPP::SetupEnemyArray(AEnemySimple_CPP* EnemyRef)
 {
 	EnemyArray.Add(EnemyRef);
 	EnemyRef->RemoveFromArrayDelegate.BindUObject(this, &AGM_CPP::RemoveFromArray);
+
 }

@@ -59,7 +59,6 @@ void ARoselia::BeginPlay()
 
 
 	MyWorld = GetWorld();
-	CombatStart();
 
 	Left = FRotator(0, 270, 0);
 	Right = FRotator(0, 90, 0);
@@ -213,6 +212,8 @@ void ARoselia::CombatStart()
 
 void ARoselia::CombatEnd()
 {
+	MyWorld->GetTimerManager().ClearTimer(FearManagement_TH);
+	Fear = 0;
 }
 
 void ARoselia::MoveUp(float Value)

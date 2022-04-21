@@ -39,7 +39,7 @@ public:
 	UPROPERTY()
 	class ARoselia* RoseliaRef;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	TArray<class AEnemySimple_CPP*> EnemyArray;
 
 	UFUNCTION()
