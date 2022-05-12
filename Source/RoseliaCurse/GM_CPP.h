@@ -21,7 +21,7 @@ public:
 	
 
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	class UCameraComponent* CameraPlayer;
 
 	UPROPERTY()
@@ -33,10 +33,10 @@ public:
 	UPROPERTY()
 	class ACameraPosition_CPP* CameraPositionRef;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	class APlayerController* RoseliaController;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	class ARoselia* RoseliaRef;
 
 	UPROPERTY(EditAnywhere)
@@ -53,4 +53,10 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void SpawnBoss();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void OpenRoom();
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void DestroyBossEnemy();
 };

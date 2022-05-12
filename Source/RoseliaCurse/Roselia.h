@@ -46,6 +46,7 @@ public:
 	float DMGTorch;
 	bool bIsSlowed;
 	bool bIsStunned;
+	bool bIsInCombat;
 
 
 	UPROPERTY(BlueprintReadWrite)

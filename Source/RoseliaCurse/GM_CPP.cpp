@@ -48,8 +48,14 @@ void AGM_CPP::BeginPlay()
 void AGM_CPP::RemoveFromArray(AEnemySimple_CPP* EnemyRef)
 {
 	EnemyArray.Remove(EnemyRef);
-	if (EnemyArray.Num() == 0) 
-		SpawnBoss();
+	if (EnemyArray.Num() == 0)
+	{
+		OpenRoom();
+		if (EnemyRef->ActorHasTag("Tentacle"))
+		{
+			DestroyBossEnemy();
+		}
+	}
 }
 
 void AGM_CPP::SetupEnemyArray(AEnemySimple_CPP* EnemyRef)

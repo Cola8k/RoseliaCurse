@@ -184,7 +184,7 @@ void ARoselia::GHostLightDOT()
 
 void ARoselia::LightSwitch()
 {
-	if (!bIsInBerserkMode)
+	if (!bIsInBerserkMode && bIsInCombat)
 	{
 		if (bIsLightOn)
 		{
@@ -206,12 +206,20 @@ void ARoselia::LightSwitch()
 
 void ARoselia::CombatStart()
 {
-	
+	bIsInCombat = true;
 	MyWorld->GetTimerManager().SetTimer(FearManagement_TH, this, &ARoselia::FearManagement, 0.1f, true);
 }
 
 void ARoselia::CombatEnd()
 {
+	bIsInCombat = false;
+	bIsLightOn = false;
+	bIsInBerserkMode = false;
+	GetCharacterMovement()->MaxWalkSpeed = 600;
+	GhostLight->SetIntensity(0);
+	TorchLight->SetIntensity(0);
+	MyWorld->GetTimerManager().ClearTimer(GhostLightDOT_TH);
+	MyWorld->GetTimerManager().ClearTimer(DOT_TH);
 	MyWorld->GetTimerManager().ClearTimer(FearManagement_TH);
 	Fear = 0;
 }
@@ -253,7 +261,7 @@ void ARoselia::SlowFunction()
 	}
 	else
 	{	
-		SetLifeSpan(0.1f);
+		EndgameFunction(1);
 	}
 }
 
